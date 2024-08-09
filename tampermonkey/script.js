@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         URL Safety Checker - API - Aries
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  Check if a URL is safe using API Aries
 // @icon         https://dashboard.api-aries.online/logo/logo.png
 // @author       API Aries - Team
@@ -11,31 +11,9 @@
 // @grant        GM_registerMenuCommand
 // @connect      api.api-aries.online
 // @require      http://code.jquery.com/jquery-3.6.0.min.js
-// @downloadURL https://update.greasyfork.org/scripts/502108/URL%20Safety%20Checker%20-%20API%20-%20Aries.user.js
-// @updateURL https://update.greasyfork.org/scripts/502108/URL%20Safety%20Checker%20-%20API%20-%20Aries.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/502108/URL%20Safety%20Checker%20-%20API%20-%20Aries.user.js
+// @updateURL    https://update.greasyfork.org/scripts/502108/URL%20Safety%20Checker%20-%20API%20-%20Aries.meta.js
 // ==/UserScript==
-
-/*
-MIT License
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
 
 (function() {
     'use strict';
@@ -43,8 +21,29 @@ SOFTWARE.
     // User's API token - MUST be set by the user
     const apiToken = ''; // <-- Place your API Aries token here - https://dashboard.api-aries.online
 
+    const lang = navigator.language || navigator.userLanguage;
+    const isSpanish = lang.startsWith('es');
+
+    const messages = {
+        apiTokenRequired: isSpanish ? "Se requiere un token API para que este script funcione. Puede obtener un token gratuito visitando https://dashboard.api-aries.online/. Edite el script y coloque su token en el área designada." : "API token is required for this script to function. You can obtain a free token by visiting https://dashboard.api-aries.online/. Please edit the script and place your token in the designated area.",
+        checking: isSpanish ? "Verificando la seguridad de la pagina..." : "Checking URL's safety...",
+        safe: isSpanish ? "Esta pagina es segura." : "This URL is safe.",
+        iplogger: isSpanish ? "Esta pagina está identificada como una pagina de collectar su IP." : "This URL is identified as an iplogger.",
+        phishing: isSpanish ? "Esta pagina está identificada como una pagina de collectar su informacion." : "This URL is identified as a phishing URL.",
+        errorChecking: isSpanish ? "Error al verificar la seguridad de la pagina." : "Error checking URL safety.",
+        apiUsageTitle: isSpanish ? "Uso de la API" : "API Usage",
+        requestCount: isSpanish ? "Cantidad de Solicitudes echas hoy:" : "Request Count:",
+        lastRequestDate: isSpanish ? "Fecha de la Última Solicitud:" : "Last Request Date:",
+        requestsLeft: isSpanish ? "Solicitudes Restantes para Hoy:" : "Requests Left for Today:",
+        fetchingUsage: isSpanish ? "Obteniendo datos de uso..." : "Fetching usage data...",
+        close: isSpanish ? "Cerrar" : "Close",
+        error: isSpanish ? "Error: " : "Error: ",
+        poweredBy: isSpanish ? "Servicios por" : "Powered by",
+        seeMore: isSpanish ? "Ver más iniciando sesión en nuestro panel de control. (no esta in español.)" : "See more by logging into our dashboard.",
+    };
+
     if (!apiToken) {
-        alert('API token is required for this script to function. You can obtain a free token by visiting https://dashboard.api-aries.online/. Please edit the script and place your token in the designated area.');
+        alert(messages.apiTokenRequired);
         return;
     }
 
@@ -53,13 +52,13 @@ SOFTWARE.
         <div id="urlSafetyPopup" style="position: fixed; top: 20px; right: 20px; width: 300px; padding: 15px; background-color: #fff; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10000; display: none; font-family: Arial, sans-serif;">
             <img src="https://dashboard.api-aries.online/logo/logo.png" alt="Icon" style="width: 50px; height: 50px; display: block; margin: 0 auto;">
             <div id="urlSafetySpinner" style="border: 4px solid rgba(0, 0, 0, 0.1); border-top: 4px solid #3498db; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 10px auto;"></div>
-            <p id="urlSafetyMessage" style="text-align: center; margin-top: 10px;">Checking URL's safety...</p>
-            <p style="text-align: center; font-size: 10px; color: #999; margin-top: 10px;">Powered by <a href="https://api-aries.online" target="_blank" style="color: #3498db; text-decoration: none;">API Aries</a></p>
+            <p id="urlSafetyMessage" style="text-align: center; margin-top: 10px;">${messages.checking}</p>
+            <p style="text-align: center; font-size: 10px; color: #999; margin-top: 10px;">${messages.poweredBy} <a href="https://api-aries.online" target="_blank" style="color: #3498db; text-decoration: none;">API Aries</a></p>
         </div>
         <div id="apiUsagePopup" style="position: fixed; top: 60px; right: 20px; width: 300px; padding: 15px; background-color: #fff; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10001; display: none; font-family: Arial, sans-serif;">
-            <h3 style="text-align: center;">API Usage</h3>
-            <p id="apiUsageMessage" style="text-align: center; margin-top: 10px;">Fetching usage data...</p>
-            <button id="closeApiUsage" style="display: block; margin: 10px auto; padding: 5px 10px; border: none; background-color: #3498db; color: #fff; border-radius: 5px; cursor: pointer;">Close</button>
+            <h3 style="text-align: center;">${messages.apiUsageTitle}</h3>
+            <p id="apiUsageMessage" style="text-align: center; margin-top: 10px;">${messages.fetchingUsage}</p>
+            <button id="closeApiUsage" style="display: block; margin: 10px auto; padding: 5px 10px; border: none; background-color: #3498db; color: #fff; border-radius: 5px; cursor: pointer;">${messages.close}</button>
         </div>
         <style>
             @keyframes spin {
@@ -88,7 +87,7 @@ SOFTWARE.
                 }
             },
             onerror: function() {
-                $('#urlSafetyMessage').text('Error checking URL safety.');
+                $('#urlSafetyMessage').text(messages.errorChecking);
                 $('#urlSafetyPopup').css('background-color', '#f2dede');
                 setTimeout(() => { $('#urlSafetyPopup').fadeOut(); }, 5000); // Hide after 5 seconds
             }
@@ -97,22 +96,29 @@ SOFTWARE.
 
     // Function to display the result
     function displayResult(result) {
-        let message = result.message;
+        let message;
         if (result.safe) {
-            $('#urlSafetyMessage').text(`This URL is safe`);
+            message = messages.safe;
             $('#urlSafetyPopup').css('background-color', '#dff0d8'); // Green background for safe URL
+        } else if (result.message.includes("iplogger")) {
+            message = messages.iplogger;
+            $('#urlSafetyPopup').css('background-color', '#f2dede'); // Red background for unsafe URL
+        } else if (result.message.includes("phishing")) {
+            message = messages.phishing;
+            $('#urlSafetyPopup').css('background-color', '#f2dede'); // Red background for unsafe URL
         } else {
-            $('#urlSafetyMessage').text(`Warning: ${message}`);
+            message = result.message;
             $('#urlSafetyPopup').css('background-color', '#f2dede'); // Red background for unsafe URL
         }
+        $('#urlSafetyMessage').text(message);
         $('#urlSafetySpinner').hide();
         setTimeout(() => { $('#urlSafetyPopup').fadeOut(); }, 5000); // Hide after 5 seconds
     }
 
     // Function to display the error
     function displayError(error) {
-        let message = `${error.error} - ${error.message}`;
-        $('#urlSafetyMessage').text(`Error: ${message}`);
+        let message = `${messages.error}${error.error} - ${error.message}`;
+        $('#urlSafetyMessage').text(message);
         $('#urlSafetyPopup').css('background-color', '#f2dede'); // Red background for error
         $('#urlSafetySpinner').hide();
         setTimeout(() => { $('#urlSafetyPopup').fadeOut(); }, 5000); // Hide after 5 seconds
@@ -127,20 +133,20 @@ SOFTWARE.
             onload: function(response) {
                 let usage = JSON.parse(response.responseText);
                 $('#apiUsageMessage').html(`
-                    <strong>Request Count:</strong> ${usage.request_count}<br>
-                    <strong>Last Request Date:</strong> ${usage.last_request_date}<br>
-                    <strong>Requests Left for Today:</strong> ${usage.request_left_for_today.toLocaleString()}
-                    <button><a href="https://dashboard.api-aries.online/">See more by logging into our dashboard.</a></button>
+                    <strong>${messages.requestCount}</strong> ${usage.request_count}<br>
+                    <strong>${messages.lastRequestDate}</strong> ${usage.last_request_date}<br>
+                    <strong>${messages.requestsLeft}</strong> ${usage.request_left_for_today.toLocaleString()}
+                    <button><a href="https://dashboard.api-aries.online/">${messages.seeMore}</a></button>
                 `);
             },
             onerror: function() {
-                $('#apiUsageMessage').text('Error fetching API usage data.');
+                $('#apiUsageMessage').text(messages.errorChecking);
             }
         });
     }
 
     // Register the menu command to show API usage
-    GM_registerMenuCommand('Show API Usage', fetchApiUsage);
+    GM_registerMenuCommand(isSpanish ? 'Mostrar uso de la API' : 'Show API Usage', fetchApiUsage);
 
     // Close API Usage Popup
     $(document).on('click', '#closeApiUsage', function() {
