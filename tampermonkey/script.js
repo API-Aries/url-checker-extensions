@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         URL Safety Checker - API - Aries
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  Check if a URL is safe using API Aries
 // @icon         https://dashboard.api-aries.online/logo/logo.png
 // @author       API Aries - Team
@@ -11,8 +11,8 @@
 // @grant        GM_registerMenuCommand
 // @connect      api.api-aries.online
 // @require      http://code.jquery.com/jquery-3.6.0.min.js
-// @downloadURL  https://update.greasyfork.org/scripts/502108/URL%20Safety%20Checker%20-%20API%20-%20Aries.user.js
-// @updateURL    https://update.greasyfork.org/scripts/502108/URL%20Safety%20Checker%20-%20API%20-%20Aries.meta.js
+// @downloadURL https://update.greasyfork.org/scripts/502108/URL%20Safety%20Checker%20-%20API%20-%20Aries.user.js
+// @updateURL https://update.greasyfork.org/scripts/502108/URL%20Safety%20Checker%20-%20API%20-%20Aries.meta.js
 // ==/UserScript==
 
 (function() {
@@ -47,18 +47,18 @@
         return;
     }
 
-    // Add a popup container to the page
     $('body').append(`
         <div id="urlSafetyPopup" style="position: fixed; top: 20px; right: 20px; width: 300px; padding: 15px; background-color: #fff; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10000; display: none; font-family: Arial, sans-serif;">
+         <button id="closeUrlSafety" style="position: absolute; top: 5px; right: 5px; padding: 0; border: none; background: none; font-size: 20px; line-height: 20px; cursor: pointer; color: #e74c3c;">&times;</button>
             <img src="https://dashboard.api-aries.online/logo/logo.png" alt="Icon" style="width: 50px; height: 50px; display: block; margin: 0 auto;">
             <div id="urlSafetySpinner" style="border: 4px solid rgba(0, 0, 0, 0.1); border-top: 4px solid #3498db; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 10px auto;"></div>
             <p id="urlSafetyMessage" style="text-align: center; margin-top: 10px;">${messages.checking}</p>
             <p style="text-align: center; font-size: 10px; color: #999; margin-top: 10px;">${messages.poweredBy} <a href="https://api-aries.online" target="_blank" style="color: #3498db; text-decoration: none;">API Aries</a></p>
         </div>
         <div id="apiUsagePopup" style="position: fixed; top: 60px; right: 20px; width: 300px; padding: 15px; background-color: #fff; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10001; display: none; font-family: Arial, sans-serif;">
+            <button id="closeApiUsage" style="position: absolute; top: 5px; right: 5px; padding: 0; border: none; background: none; font-size: 20px; line-height: 20px; cursor: pointer; color: #aaa;">&times;</button>
             <h3 style="text-align: center;">${messages.apiUsageTitle}</h3>
             <p id="apiUsageMessage" style="text-align: center; margin-top: 10px;">${messages.fetchingUsage}</p>
-            <button id="closeApiUsage" style="display: block; margin: 10px auto; padding: 5px 10px; border: none; background-color: #3498db; color: #fff; border-radius: 5px; cursor: pointer;">${messages.close}</button>
         </div>
         <style>
             @keyframes spin {
@@ -68,7 +68,7 @@
         </style>
     `);
 
-    // Function to check if the URL is safe
+
     function checkURLSafety(url) {
         $('#urlSafetyPopup').fadeIn();
         $('#urlSafetySpinner').show();
@@ -94,7 +94,7 @@
         });
     }
 
-    // Function to display the result
+
     function displayResult(result) {
         let message;
         if (result.safe) {
@@ -115,16 +115,16 @@
         setTimeout(() => { $('#urlSafetyPopup').fadeOut(); }, 5000); // Hide after 5 seconds
     }
 
-    // Function to display the error
+
     function displayError(error) {
         let message = `${messages.error}${error.error} - ${error.message}`;
         $('#urlSafetyMessage').text(message);
-        $('#urlSafetyPopup').css('background-color', '#f2dede'); // Red background for error
+        $('#urlSafetyPopup').css('background-color', '#f2dede');
         $('#urlSafetySpinner').hide();
         setTimeout(() => { $('#urlSafetyPopup').fadeOut(); }, 5000); // Hide after 5 seconds
     }
 
-    // Function to fetch and display API usage
+
     function fetchApiUsage() {
         $('#apiUsagePopup').fadeIn();
         GM_xmlhttpRequest({
@@ -145,15 +145,20 @@
         });
     }
 
-    // Register the menu command to show API usage
+
     GM_registerMenuCommand(isSpanish ? 'Mostrar uso de la API' : 'Show API Usage', fetchApiUsage);
 
-    // Close API Usage Popup
+
     $(document).on('click', '#closeApiUsage', function() {
         $('#apiUsagePopup').fadeOut();
     });
 
-    // Run the script on page load
+
+    $(document).on('click', '#closeUrlSafety', function() {
+        $('#urlSafetyPopup').fadeOut();
+    });
+
+
     window.onload = function() {
         let currentURL = window.location.href;
         checkURLSafety(currentURL);
