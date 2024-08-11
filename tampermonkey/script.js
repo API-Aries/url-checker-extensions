@@ -1,9 +1,15 @@
 // ==UserScript==
 // @name         URL Safety Checker - API - Aries
-// @namespace    http://tampermonkey.net/
-// @version      1.4
+// @namespace    https://api-aries.online/
+// @version      1.5
 // @description  Check if a URL is safe using API Aries
-// @icon         https://dashboard.api-aries.online/logo/logo.png
+// @description:es Compruebe si una URL es segura usando API Aries
+// @iconURL      https://dashboard.api-aries.online/logo/logo.png
+// @supportURL   https://support.api-aries.online/contact
+// @website      https://api-aries.online/
+// @run-at document-body
+// @homepageURL  https://api-aries.online/
+// @noframes
 // @author       API Aries - Team
 // @license      MIT
 // @match        *://*/*
@@ -28,8 +34,8 @@
         apiTokenRequired: isSpanish ? "Se requiere un token API para que este script funcione. Puede obtener un token gratuito visitando https://dashboard.api-aries.online/. Edite el script y coloque su token en el área designada." : "API token is required for this script to function. You can obtain a free token by visiting https://dashboard.api-aries.online/. Please edit the script and place your token in the designated area.",
         checking: isSpanish ? "Verificando la seguridad de la pagina..." : "Checking URL's safety...",
         safe: isSpanish ? "Esta pagina es segura." : "This URL is safe.",
-        iplogger: isSpanish ? "Esta pagina está identificada como una pagina de colectar su IP." : "This URL is identified as an iplogger.",
-        phishing: isSpanish ? "Esta pagina está identificada como una pagina de colectar su informacion." : "This URL is identified as a phishing URL.",
+        iplogger: isSpanish ? "Esta pagina está identificada como una pagina de collectar su IP." : "This URL is identified as an iplogger.",
+        phishing: isSpanish ? "Esta pagina está identificada como una pagina de collectar su informacion." : "This URL is identified as a phishing URL.",
         errorChecking: isSpanish ? "Error al verificar la seguridad de la pagina." : "Error checking URL safety.",
         apiUsageTitle: isSpanish ? "Uso de la API" : "API Usage",
         requestCount: isSpanish ? "Cantidad de Solicitudes echas hoy:" : "Request Count:",
