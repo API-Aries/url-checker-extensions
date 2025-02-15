@@ -5,13 +5,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show the "Checking URL..." message
     statusDiv.textContent = 'Checking URL...';
-    statusDiv.style.backgroundColor = '#17a2b8'; // Informational color
+    statusDiv.style.backgroundColor = '#17a2b8'; 
     statusDiv.style.color = 'white';
 
-    fetch(`https://api.api-aries.online/v1/checkers/safe-url/?url=${encodeURIComponent(url)}`, {
+    fetch(`https://api.api-aries.com/v1/checkers/safe-url/?url=${encodeURIComponent(url)}`, {
       method: 'GET',
       headers: {
-        'APITOKEN': '111-111-111-111' // get api token from https://dashboard.api-aries.online/
+        'APITOKEN': '111-111-111-111' // get api token from https://panel.api-aries.online/
       }
     })
     .then(response => response.json())
