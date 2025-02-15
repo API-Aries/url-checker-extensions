@@ -19,7 +19,7 @@ function showMessage(message, color) {
     poweredByDiv.style.marginTop = '10px';
     poweredByDiv.style.textAlign = 'center';
     const poweredByLink = document.createElement('a');
-    poweredByLink.href = 'https://api-aries.online';
+    poweredByLink.href = 'https://api-aries.com';
     poweredByLink.style.color = 'white';
     poweredByLink.style.textDecoration = 'none';
     poweredByLink.textContent = 'Powered by API Aries';
