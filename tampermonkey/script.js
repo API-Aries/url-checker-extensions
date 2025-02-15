@@ -1,21 +1,21 @@
 // ==UserScript==
 // @name         URL Safety Checker - API - Aries
-// @namespace    https://api-aries.online/
+// @namespace    https://api-aries.com/
 // @version      1.5
 // @description  Check if a URL is safe using API Aries
 // @description:es Compruebe si una URL es segura usando API Aries
-// @iconURL      https://dashboard.api-aries.online/logo/logo.png
-// @supportURL   https://support.api-aries.online/contact
-// @website      https://api-aries.online/
+// @iconURL      https://dashboard.api-aries.com/logo/logo.png
+// @supportURL   https://support.api-aries.com/contact
+// @website      https://api-aries.com/
 // @run-at document-body
-// @homepageURL  https://api-aries.online/
+// @homepageURL  https://api-aries.com/
 // @noframes
 // @author       API Aries - Team
 // @license      MIT
 // @match        *://*/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_registerMenuCommand
-// @connect      api.api-aries.online
+// @connect      api.api-aries.com
 // @require      http://code.jquery.com/jquery-3.6.0.min.js
 // @downloadURL https://update.greasyfork.org/scripts/502108/URL%20Safety%20Checker%20-%20API%20-%20Aries.user.js
 // @updateURL https://update.greasyfork.org/scripts/502108/URL%20Safety%20Checker%20-%20API%20-%20Aries.meta.js
@@ -25,13 +25,13 @@
     'use strict';
 
     // User's API token - MUST be set by the user
-    const apiToken = ''; // <-- Place your API Aries token here - https://dashboard.api-aries.online
+    const apiToken = ''; // <-- Place your API Aries token here - https://panel.api-aries.com
 
     const lang = navigator.language || navigator.userLanguage;
     const isSpanish = lang.startsWith('es');
 
     const messages = {
-        apiTokenRequired: isSpanish ? "Se requiere un token API para que este script funcione. Puede obtener un token gratuito visitando https://dashboard.api-aries.online/. Edite el script y coloque su token en el área designada." : "API token is required for this script to function. You can obtain a free token by visiting https://dashboard.api-aries.online/. Please edit the script and place your token in the designated area.",
+        apiTokenRequired: isSpanish ? "Se requiere un token API para que este script funcione. Puede obtener un token gratuito visitando https://dashboard.api-aries.com/. Edite el script y coloque su token en el área designada." : "API token is required for this script to function. You can obtain a free token by visiting https://dashboard.api-aries.com/. Please edit the script and place your token in the designated area.",
         checking: isSpanish ? "Verificando la seguridad de la pagina..." : "Checking URL's safety...",
         safe: isSpanish ? "Esta pagina es segura." : "This URL is safe.",
         iplogger: isSpanish ? "Esta pagina está identificada como una pagina de collectar su IP." : "This URL is identified as an iplogger.",
@@ -70,10 +70,10 @@
     $('body').append(`
         <div id="urlSafetyPopup" style="position: fixed; top: 20px; right: 20px; width: 300px; padding: 15px; ${darkMode ? darkModeStyles : lightModeStyles} border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10000; display: none; font-family: Arial, sans-serif;">
          <button id="closeUrlSafety" style="position: absolute; top: 5px; right: 5px; padding: 0; border: none; background: none; font-size: 20px; line-height: 20px; cursor: pointer; color: #e74c3c;">&times;</button>
-            <img src="https://dashboard.api-aries.online/logo/logo.png" alt="Icon" style="width: 50px; height: 50px; display: block; margin: 0 auto;">
+            <img src="https://panel.api-aries.com/logo/logo.png" alt="Icon" style="width: 50px; height: 50px; display: block; margin: 0 auto;">
             <div id="urlSafetySpinner" style="border: 4px solid rgba(0, 0, 0, 0.1); border-top: 4px solid #3498db; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 10px auto;"></div>
             <p id="urlSafetyMessage" style="text-align: center; margin-top: 10px;">${messages.checking}</p>
-            <p style="text-align: center; font-size: 10px; color: ${darkMode ? '#aaa' : '#999'}; margin-top: 10px;">${messages.poweredBy} <a href="https://api-aries.online" target="_blank" style="color: #3498db; text-decoration: none;">API Aries</a></p>
+            <p style="text-align: center; font-size: 10px; color: ${darkMode ? '#aaa' : '#999'}; margin-top: 10px;">${messages.poweredBy} <a href="https://api-aries.com" target="_blank" style="color: #3498db; text-decoration: none;">API Aries</a></p>
         </div>
         <div id="apiUsagePopup" style="position: fixed; top: 60px; right: 20px; width: 300px; padding: 15px; ${darkMode ? darkModeStyles : lightModeStyles} border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10001; display: none; font-family: Arial, sans-serif;">
             <button id="closeApiUsage" style="position: absolute; top: 5px; right: 5px; padding: 0; border: none; background: none; font-size: 20px; line-height: 20px; cursor: pointer; color: #aaa;">&times;</button>
@@ -93,7 +93,7 @@
         $('#urlSafetySpinner').show();
         GM_xmlhttpRequest({
             method: 'GET',
-            url: `https://api.api-aries.online/v1/checkers/safe-url/?url=${encodeURIComponent(url)}`,
+            url: `https://api.api-aries.com/v1/checkers/safe-url/?url=${encodeURIComponent(url)}`,
             headers: {
                 'APITOKEN': apiToken
             },
@@ -145,14 +145,14 @@
         $('#apiUsagePopup').fadeIn();
         GM_xmlhttpRequest({
             method: 'GET',
-            url: `https://api.api-aries.online/system-api/dashboard/usage/?api_token=${apiToken}`,
+            url: `https://api.api-aries.com/system-api/dashboard/usage/?api_token=${apiToken}`,
             onload: function(response) {
                 let usage = JSON.parse(response.responseText);
                 $('#apiUsageMessage').html(`
                     <strong>${messages.requestCount}</strong> ${usage.request_count}<br>
                     <strong>${messages.lastRequestDate}</strong> ${usage.last_request_date}<br>
                     <strong>${messages.requestsLeft}</strong> ${usage.request_left_for_today.toLocaleString()}
-                    <button><a href="https://dashboard.api-aries.online/">${messages.seeMore}</a></button>
+                    <button><a href="https://dashboard.api-aries.com/">${messages.seeMore}</a></button>
                 `);
             },
             onerror: function() {
