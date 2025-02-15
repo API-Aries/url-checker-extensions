@@ -1,9 +1,9 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.url) {
-    fetch(`https://api.api-aries.online/v1/checkers/safe-url/?url=${encodeURIComponent(request.url)}`, {
+    fetch(`https://api.api-aries.com/v1/checkers/safe-url/?url=${encodeURIComponent(request.url)}`, {
       method: 'GET',
       headers: {
-        'APITOKEN': '111-111-111-111' // get api token from https://dashboard.api-aries.online/
+        'APITOKEN': '111-111-111-111' // get api token from https://panel.api-aries.online/
       }
     })
     .then(response => response.json())
